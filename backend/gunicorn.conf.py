@@ -1,0 +1,9 @@
+bind            = f"0.0.0.0:{__import__('os').getenv('PORT', '5001')}"
+workers         = 2           # keep low — face_recognition is CPU-heavy
+threads         = 4
+timeout         = 120         # face encoding can take ~10s for large images
+worker_class    = "gthread"
+preload_app     = True        # loads pkl files once, shared across workers
+accesslog       = "-"
+errorlog        = "-"
+loglevel        = "info"
