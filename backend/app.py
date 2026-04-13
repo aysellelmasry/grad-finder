@@ -33,10 +33,15 @@ class Config:
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = Config.MAX_UPLOAD_MB * 1024 * 1024
 
-# FIX 1: Explicit CORS config — allow all origins, methods, and headers
-CORS(app, resources={r"/*": {"origins": "*"}},
+# FIX 1: Explicit CORS config — use environment-configured origins
+cors_origins = [origin.strip() for origin in Config.ALLOWED_ORIGINS if origin.strip()]
+if '*' in cors_origins or len(cors_origins) == 0:
+    cors_origins = ['*']
+    
+CORS(app, resources={r"/*": {"origins": cors_origins}},
      allow_headers=["Content-Type", "Authorization"],
      methods=["GET", "POST", "OPTIONS"])
+logger.info(f"CORS enabled for origins: {cors_origins}")
 
 # ── Load data once at startup ────────────────────────────
 _data_cache = None   # FIX 2: manual cache instead of @lru_cache (avoids pickling issues)
@@ -273,4 +278,5 @@ def server_error(e):
 
 if __name__ == '__main__':
     load_data()  # warm up — shows missing files immediately on start
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5001)), debug=True)
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=debug_mode)

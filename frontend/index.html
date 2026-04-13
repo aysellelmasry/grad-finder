@@ -500,7 +500,10 @@ select option{background:#081428}
 </div>
 
 <script>
-const API_BASE = 'http://127.0.0.1:5001';
+// Determine API base URL - reads from window.__API_BASE or environment variable, falls back to localhost
+const API_BASE = window.__API_BASE || 
+                 (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE) ||
+                 'http://127.0.0.1:5000';
 let files=[], previews=[], results=[], filtered=[], selected=new Set();
 let lbIndex=0, gridSize='m', allSel=false;
 

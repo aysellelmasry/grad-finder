@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm run build || echo 'No build required'",
+  "outputDirectory": ".",
+  "framework": "html",
+  "env": {
+    "REACT_APP_API_BASE": "@api_base_url"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.html"
+    }
+  ]
+}
